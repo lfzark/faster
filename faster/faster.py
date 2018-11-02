@@ -24,6 +24,9 @@ else:
     from urllib.parse import urlparse
     import urllib.request as request
 
+config = RawConfigParser()
+
+
 PIP_CONF_PATH = LINUX_PIP_CONF_PATH = "%s/.pip/pip.conf" % (os.path.expanduser('~'))
 PYRM_DIR   = LINUX_PYRM_DIR  =  "%s/.pip" % (os.path.expanduser('~'))
 WIN_PIP_CONF_PATH = "%s\pip\pip.ini" % ( os.environ.get("HOMEPATH"))
@@ -45,14 +48,29 @@ GLOBAL_SECTION = 'global'
 CONF_TEMPLATE ='''[global]
 timeout = 60
 index-url = http://pypi.douban.com/simple
-[install]
 trusted-host = pypi.douban.com
 '''
 
-config = RawConfigParser()
-if not os.path.exists(PIP_CONF_PATH):
+def init_pip_conf():
+    try:
+        os.makedirs(PYRM_DIR)
+    except :
+        pass
+
     with open(PIP_CONF_PATH,"w") as pip_conf_f:
         pip_conf_f.write(CONF_TEMPLATE)
+
+
+
+if not os.path.exists(PIP_CONF_PATH):
+    init_pip_conf()
+
+try:
+    config.get(GLOBAL_SECTION,"index-url")
+    config.get(GLOBAL_SECTION,"trusted-host")
+    config.getint(GLOBAL_SECTION,"timeout")
+except :
+    init_pip_conf()
 
 config.read(PIP_CONF_PATH)
 
@@ -127,7 +145,7 @@ def test_pip_source_speed(url,default_timeout=5):
         return url,time.time() -start,None
 
 def test_pip_list_speed():
-    print("[+] May cost your few minutes according your network situation.")
+    print("[+] May cost your few minutes according your network situation.\n")
 
     with open(PYRM_PATH) as pip_list_f:
 
@@ -204,7 +222,7 @@ def add(*args):
     url = args[0][1]
     print ('ADD %s - %s' % (registry, url))
     global SYS_PIP_LIST
-    SYS_PIP_LIST[registry] = url
+    SYS_PIP_LIST[registry.strip()] = url.strip()
     save_pip_conf()
 
 def rm(*args):
