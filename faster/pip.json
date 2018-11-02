@@ -1,0 +1,8 @@
+{
+    "douban": "https://pypi.douban.com/simple",
+    "tsinghua": "https://pypi.tuna.tsinghua.edu.cn/simple",
+    "tencent":" https://mirrors.cloud.tencent.com/pypi/simple",
+    "aliyun": "https://mirrors.aliyun.com/pypi/simple",
+    "ustc": "https://pypi.mirrors.ustc.edu.cn/simple",
+    "pypi": "https://pypi.python.org/simple"
+}
